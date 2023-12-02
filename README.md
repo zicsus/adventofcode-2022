@@ -1,2 +1,7 @@
 # adventofcode-2022
 Advent of code with Odin language.
+
+## Run 
+```
+    odin run [day]
+```
