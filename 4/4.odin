@@ -13,7 +13,7 @@ contains :: proc(a: []string, b: []string) -> (bool, bool)
     b1, ok3 := strconv.parse_int(b[1]); 
 
     full := b0 - a0 >= 0 && b1 - a1 <= 0;
-    partial := b0 - a0 >= 0 || b1 - a1 <= 0;
+    partial := b0 >= a0 && b0 <= a1;
 
     return full, partial;
 }
@@ -22,7 +22,7 @@ main :: proc()
 {
     lines := [dynamic]string{};
 
-    ok := utils.read_file_by_lines("./4/example.txt", &lines);
+    ok := utils.read_file_by_lines("./4/input.txt", &lines);
     if !ok
     {
         fmt.println("Unable to read file!");
@@ -45,7 +45,7 @@ main :: proc()
         {
             fully += 1;
         }
-
+        
         if (partiala || partialb)
         {
             overlaps += 1;
