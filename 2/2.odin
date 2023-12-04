@@ -2,8 +2,8 @@ package main
 
 import "core:fmt";
 import "core:strings";
+import "core:time";
 import "../utils";
-
 
 score :: proc(a: int, b: int) -> int 
 {
@@ -17,26 +17,31 @@ to_play :: proc(them : int, result : int) -> int
 
 main :: proc() 
 {
+    stopwatch : time.Stopwatch;
+    time.stopwatch_start(&stopwatch);
+
     lines := [dynamic]string{};
-
     ok := utils.read_file_by_lines("./2/input.txt", &lines);
-
     if !ok 
     {
         fmt.println("Failed to read file");
         return;
     }
 
-    points := 0;
+    part1 := 0;
+    part2 := 0;
     for line in lines
     {
         them := int(line[0] - 'A');
         me := int(line[2] - 'X');
 
-        round := score(me, them);
-        points += score(to_play(them, me), them);
+        part1 += score(me, them);
+        part2 += score(to_play(them, me), them);
     }
 
-    fmt.println(points);
+    time.stopwatch_stop(&stopwatch);
 
+    fmt.println("Score in part 1:", part1);
+    fmt.println("Score in part 2:", part2);
+    fmt.printf("Time: %vms", time.duration_milliseconds(stopwatch._accumulation));
 }

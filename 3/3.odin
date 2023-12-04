@@ -2,6 +2,7 @@ package main;
 
 import "core:fmt";
 import "core:slice";
+import "core:time";
 import "../utils";
 
 to_int_array :: proc(line: string, arr: ^[dynamic]int)
@@ -14,8 +15,10 @@ to_int_array :: proc(line: string, arr: ^[dynamic]int)
 
 main :: proc()
 {
-    lines := [dynamic]string{};
+    stopwatch : time.Stopwatch;
+    time.stopwatch_start(&stopwatch);
 
+    lines := [dynamic]string{};
     ok := utils.read_file_by_lines("./3/input.txt", &lines);
     if !ok
     {
@@ -82,5 +85,9 @@ main :: proc()
         }
     }
 
-    fmt.println(part1, part2);
+    time.stopwatch_stop(&stopwatch);
+
+    fmt.println("Common in rucksacks:", part1);
+    fmt.println("Common in set of 3:", part2);
+    fmt.printf("Time: %vms", time.duration_milliseconds(stopwatch._accumulation));
 }
