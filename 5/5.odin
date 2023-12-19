@@ -20,7 +20,7 @@ main :: proc()
         return;
     }
 
-    stacks : [9]queue.Queue(u8);
+    stack1, stack2 : [9]queue.Queue(u8);
     flag := false;
 
     for line in lines
@@ -38,7 +38,11 @@ main :: proc()
             {
                 chr := line[offset];
                 if (chr == '1') do break;
-                if (chr != ' ') do queue.push_back(&stacks[idx], chr);
+                if (chr != ' ') 
+                {
+                    queue.push_back(&stack1[idx], chr);
+                    queue.push_back(&stack2[idx], chr);
+                }
                 idx += 1;
             }
         }
@@ -49,22 +53,35 @@ main :: proc()
             from, _ := strconv.parse_uint(arr[3]);
             dst, _ := strconv.parse_uint(arr[5]);
             
+            temp_arr := [dynamic]u8{};
             for _ in 0..<num
-            {   
-                queue.push_front(&stacks[dst-1], queue.pop_front(&stacks[from-1]));
+            {
+                queue.push_front(&stack1[dst-1], queue.pop_front(&stack1[from-1]));
+                append(&temp_arr, queue.pop_front(&stack2[from-1]));
+            }
+
+            for i := len(temp_arr) - 1; i >= 0; i -= 1
+            {
+                queue.push_front(&stack2[dst-1], temp_arr[i]);
             }
         }
     }
 
-    first := [dynamic]u8{};
-    for _, idx in stacks
+    first, second := [dynamic]u8{}, [dynamic]u8{};
+    for _, idx in stack1
     {
-        append(&first, queue.front(&stacks[idx]));
+        append(&first, queue.front(&stack1[idx]));
+    }
+
+    for _, idx in stack2
+    {
+        append(&second, queue.front(&stack2[idx]))
     }
 
     time.stopwatch_stop(&stopwatch);
 
     fmt.println("First:", string(first[:]));
+    fmt.println("Second:", string(second[:]));
 
-    fmt.printf("Time: %vms", time.duration_milliseconds(stopwatch._accumulation));
+    fmt.printf("Time: %vms\n", time.duration_milliseconds(stopwatch._accumulation));
 }
